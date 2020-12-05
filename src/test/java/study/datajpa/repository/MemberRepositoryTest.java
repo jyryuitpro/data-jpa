@@ -13,6 +13,8 @@ import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 import study.datajpa.entity.Team;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +31,9 @@ class MemberRepositoryTest {
 
     @Autowired
     TeamRepository teamRepository;
+
+    @PersistenceContext
+    EntityManager em;
 
     @Test
     void testMember() {
@@ -183,11 +188,11 @@ class MemberRepositoryTest {
     @Test
     void paging() {
         //given
-        memberRepository.save(new Member("memeber1", 10));
-        memberRepository.save(new Member("memeber2", 10));
-        memberRepository.save(new Member("memeber3", 10));
-        memberRepository.save(new Member("memeber4", 10));
-        memberRepository.save(new Member("memeber5", 10));
+        memberRepository.save(new Member("member1", 10));
+        memberRepository.save(new Member("member2", 10));
+        memberRepository.save(new Member("member3", 10));
+        memberRepository.save(new Member("member4", 10));
+        memberRepository.save(new Member("member5", 10));
 
         int age = 10;
         PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "username"));
@@ -218,11 +223,11 @@ class MemberRepositoryTest {
     @Test
     void pagingSlice() {
         //given
-        memberRepository.save(new Member("memeber1", 10));
-        memberRepository.save(new Member("memeber2", 10));
-        memberRepository.save(new Member("memeber3", 10));
-        memberRepository.save(new Member("memeber4", 10));
-        memberRepository.save(new Member("memeber5", 10));
+        memberRepository.save(new Member("member1", 10));
+        memberRepository.save(new Member("member2", 10));
+        memberRepository.save(new Member("member3", 10));
+        memberRepository.save(new Member("member4", 10));
+        memberRepository.save(new Member("member5", 10));
 
         int age = 10;
         PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "username"));
@@ -251,11 +256,11 @@ class MemberRepositoryTest {
     @Test
     void pagingList() {
         //given
-        memberRepository.save(new Member("memeber1", 10));
-        memberRepository.save(new Member("memeber2", 10));
-        memberRepository.save(new Member("memeber3", 10));
-        memberRepository.save(new Member("memeber4", 10));
-        memberRepository.save(new Member("memeber5", 10));
+        memberRepository.save(new Member("member1", 10));
+        memberRepository.save(new Member("member2", 10));
+        memberRepository.save(new Member("member3", 10));
+        memberRepository.save(new Member("member4", 10));
+        memberRepository.save(new Member("member5", 10));
 
         int age = 10;
         PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "username"));
@@ -279,5 +284,26 @@ class MemberRepositoryTest {
 //        assertThat(page.getTotalPages()).isEqualTo(2);
 //        assertThat(page.isFirst()).isTrue();
 //        assertThat(page.hasNext()).isTrue();
+    }
+
+    @Test
+    void bulkUpdate() {
+        //given
+        memberRepository.save(new Member("member1", 10));
+        memberRepository.save(new Member("member2", 19));
+        memberRepository.save(new Member("member3", 20));
+        memberRepository.save(new Member("member4", 21));
+        memberRepository.save(new Member("member5", 40));
+
+        //when
+        int resultCount = memberRepository.bulkAgePlus(20);
+//        em.clear();
+
+        List<Member> result = memberRepository.findByUsername("member5");
+        Member member5 = result.get(0);
+        System.out.println("member5 = " + member5);
+
+        //then
+        assertThat(resultCount).isEqualTo(3);
     }
 }
