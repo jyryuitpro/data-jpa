@@ -22,6 +22,7 @@ class MemberRepositoryTest {
 
     @Test
     void testMember() {
+        System.out.println("memberRepository.getClass() = " + memberRepository.getClass());
         Member member = new Member("memberA");
         Member saveMember = memberRepository.save(member);
 
