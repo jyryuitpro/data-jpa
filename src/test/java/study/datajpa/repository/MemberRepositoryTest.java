@@ -11,6 +11,7 @@ import study.datajpa.entity.Team;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -152,5 +153,26 @@ class MemberRepositoryTest {
         for (Member member : result) {
             System.out.println("member = " + member);
         }
+    }
+
+    @Test
+    void returnType() {
+        Member m1 = new Member("AAA", 10);
+        Member m2 = new Member("AAA", 20);
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+
+        //값이 없을 경우 빈 컬렉션을 반환한다. 즉, null로 반환되지 않는다.
+        List<Member> result = memberRepository.findListByUsername("asdfasdf");
+        System.out.println("result = " + result.size());
+
+        //값이 없을 경우 null을 반환한다.
+        Member findMember = memberRepository.findMemberByUsername("asdfasdf");
+        System.out.println("findMember = " + findMember);
+
+        //값이 있을지 없을지 정확히 모르면...
+        //NonUniqueResultException > IncorrectResultSizeDataAccessException
+        Optional<Member> bbb = memberRepository.findOptionalByUsername("AAA");
+        System.out.println("findMember = " + bbb);
     }
 }
